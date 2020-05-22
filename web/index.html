@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta HTTP-EQUIV="Content-Type" content="text/html; charset=utf-8">
+	<meta HTTP-EQUIV="Pragma" CONTENT="no-cache">
+	<meta HTTP-EQUIV="Expires" CONTENT="-1">
+
+	<title></title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="js/WebAudioRecorder.min.js"></script>
+	<script src="js/app.js?dev=05212020"></script>
+	<link rel="stylesheet" type="text/css" href="style.css?dev=05212020">
+
+</head>
+
+<body>
+
+
+
+<div id="recorder">
+	<span id="choosespeaker"></span> 
+	&nbsp; 
+	<select id="consultant" style="font-size:100%">
+		<option value="none">
+		<option>Didi
+		<option>Jaraky
+	</select>
+
+	<table>
+		<tr valign="top"><td id="meaningtext"></td><td id="meaning">&nbsp;</td></tr>
+		<tr valign="top"><td id="prompttext"></td><td id="prompt">&nbsp;</td></tr>
+	</table>
+
+	<div id="controls">
+		<button id="startStopButton"></button>
+		<div id="status"></div>
+	</div>
+	<div id="audio">
+		<ol id="recordingsList"></ol>
+	</div>
+	<div id="promptcontrols">
+		<button id="prompts.back"></button>
+		<div><span id="prompts.counter"></span></div>
+		<button id="prompts.forward"></button>
+	</div>
+</div>
+
+</body>
+</html>
