@@ -26,7 +26,7 @@ var audioRecord = (function () {
 		finished: "Acabou ✔︎︎"
 	}
 
-	var English = false;
+	var English = window.location.href.indexOf("english")>-1; 
 	if(English) {
 		strings = {
 			title: "Web recorder",
