@@ -219,7 +219,12 @@ var audioRecord = (function () {
 			  xhr.onload=function(e) {
 				  if(this.readyState === 4) {
 					  __log("Server returned: " , e.target.responseText.replace(/\s+/g," "));
-					  document.getElementById("status").innerHTML = strings.uploadSuccessful;
+					  
+					  let status = document.createElement('span');
+					  status.innerHTML = strings.uploadSuccessful;
+					  document.getElementById("status").innerHTML = "";
+					  document.getElementById("status").append(status);
+					  
 					  document.getElementById("recordingsList").innerHTML = "";
 					  promptManager.phraseDone();
 				  }
@@ -406,7 +411,7 @@ var promptManager = (function () {
 	}
 
 	var updatePromptCounter = function() {
-		document.getElementById("prompts.counter").innerHTML = currentPromptIndex+1 + "/" + prompts.length;
+		document.getElementById("promptscounter").innerHTML = currentPromptIndex+1 + "/" + prompts.length;
 	}
 
 	return {

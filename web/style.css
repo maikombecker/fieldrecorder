@@ -11,7 +11,7 @@ body {
   margin:.5rem;
 }
 #recorder {
-	max-width: 30rem;
+	max-width: 25rem;
 	border: 1px solid black;
 	padding: 1.5rem;
 	background: #f0f0f0;
@@ -26,6 +26,7 @@ body {
 
 #controls {
 	line-height: 100%;
+	align-items: baseline;
 }
 #promptcontrols div {
 	display: inline;
@@ -35,19 +36,32 @@ body {
 	justify-content: space-between;
 	align-items: baseline;
 }
-
+#startStopButton {
+	width: 33%;
+}
+#status {
+	width: 66%;
+}
 #audio {
 	height: 4.5rem;
 }
 
+#status button {
+	width: 33%;
+}
+#promptcontrols button {
+}
+#promptscounter {
+	margin: 0rem .5rem;
+}
+
+
 #recorder button {
-  height: 3rem;
-  max-width: 9rem;
-  min-width: 6rem;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-right: 1rem;
-  padding: 0rem 1.5rem;
+	flex: 1;
+	height: 3rem;
+	font-size: 1rem;
+	font-weight: bold;
+	padding: 0rem;
 }
 #recorder button:enabled {
 	background: #9C1F12;
@@ -55,7 +69,9 @@ body {
 	font-weight: bold;
 }
 #recorder button:disabled {
-  background: #f6f6ft;
+	background: #f6f6ft;
+	color: #cccccc;
+	font-weight: bold;
 }
 #recorder button:hover:enabled, button:focus:enabled {
 	background: #a81303;
@@ -73,8 +89,13 @@ body {
 #controls .pulsating {
   animation: pulsate 2s ease-out infinite;
 }
+#status span {
+  margin-left: 1rem;
+}
 
-
+select {
+	margin-left: .5rem;
+}
 select:enabled {
 	font-size: 120%;
 	background: #9C1F12;
