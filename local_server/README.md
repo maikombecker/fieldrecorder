@@ -10,5 +10,5 @@ Further, when you have `node.js` installed, you should get in a terminal/command
 
 ## How do I run the server?
 
-Simply enter `nodejs server.js` in the terminal *in this directory*, and it should be up and running. You will be able to navigate to `http://localhost:3000/index.html` and find your experiment there.
+Simply enter `node server.js` in the terminal *in this directory*, and it should be up and running. You will be able to navigate to `http://localhost:3000/index.html` and find your experiment there.
 

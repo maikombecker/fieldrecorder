@@ -4,31 +4,12 @@ var audioRecord = (function () {
 	
 	URL = window.URL || window.webkitURL; //webkitURL is deprecated
 
-	var serverURL = "https://sdb.phonologist.org/audio/upload.php";
-	
-	
-	var strings = {
-		title: "Gravador",
-		meaningText: "Significado:",
-		promptText: "Frase:",
-		chooseSpeaker: "Falante:",
-		chooseSpeakerOption : "Favor escolher o falante",
-		recordButton : "Gravar",
-		stopButton : "Parar",
-		sentButton : "Salvar",
-		tryagainButton: "Excluir",
-		uploadSuccessful : "Salvo! ✔︎",
-		uploading : "Salvando...",
-		recording : "Gravando..",
-		processing: "Processando...",
-		forward: "próximo ▶︎",
-		back: "◀︎ anterior",
-		finished: "Acabou ✔︎︎"
-	}
+	var serverURL = "upload.php"; //https://sdb.phonologist.org/gravador/
 
-	var English = window.location.href.indexOf("english")>-1; 
-	if(English) {
-		strings = {
+	var linguist = "";
+	var language = "Portuguese";
+	var strings = {
+		English: {
 			title: "Web recorder",
 			meaningText: "Meaning:",
 			promptText: "Phrase:",
@@ -44,9 +25,28 @@ var audioRecord = (function () {
 			processing: "Processing...",
 			forward: "next ▶︎",
 			back: "◀︎ previous",
-		finished: "All done! ✔︎︎"
+			finished: "All done! ✔︎︎"
+		},
+		Portuguese: {
+			title: "Gravador",
+			meaningText: "Significado:",
+			promptText: "Frase:",
+			chooseSpeaker: "Falante:",
+			chooseSpeakerOption : "Favor escolher o falante",
+			recordButton : "Gravar",
+			stopButton : "Parar",
+			sentButton : "Salvar",
+			tryagainButton: "Excluir",
+			uploadSuccessful : "Salvo! ✔︎",
+			uploading : "Salvando...",
+			recording : "Gravando..",
+			processing: "Processando...",
+			forward: "próximo ▶︎",
+			back: "◀︎ anterior",
+			finished: "Acabou ✔︎︎"
 		}
 	}
+	
 
 
 	var gumStream; 						//stream from getUserMedia()
@@ -67,20 +67,28 @@ var audioRecord = (function () {
 	var verbose = "false";
 
 	function launch() {
+
+		linguist = location.href.replace(/.*\?(.*)/,"$1");
+		loadLinguist(linguist);
+
 	
-		document.title = strings.title;
-		startStopButton.innerHTML = strings.recordButton;
+		document.title = strings[language].title;
+		startStopButton.innerHTML = strings[language].recordButton;
 		startStopButton.addEventListener("click", toggleRecording);
 		startStopButton.disabled = true;
 
-		document.getElementById("prompts.back").innerHTML = strings.back;
-		document.getElementById("prompts.forward").innerHTML = strings.forward;
-		document.getElementById("choosespeaker").innerHTML = strings.chooseSpeaker;
-		document.getElementById("meaningtext").innerHTML = strings.meaningText;
-		document.getElementById("prompttext").innerHTML = strings.promptText;
-		document.getElementById("consultant").options[0].innerHTML = strings.chooseSpeakerOption;
+		document.getElementById("prompts.back").innerHTML = strings[language].back;
+		document.getElementById("prompts.forward").innerHTML = strings[language].forward;
+		document.getElementById("choosespeaker").innerHTML = strings[language].chooseSpeaker;
+		document.getElementById("meaningtext").innerHTML = strings[language].meaningText;
+		document.getElementById("prompttext").innerHTML = strings[language].promptText;
+		document.getElementById("consultant").options[0].innerHTML = strings[language].chooseSpeakerOption;
 
-		promptManager.launch();
+		document.getElementById("prompts.back").disabled = true;
+		document.getElementById("prompts.forward").disabled = true;
+		document.getElementById("prompts.back").addEventListener("click", prevPrompt);
+		document.getElementById("prompts.forward").addEventListener("click", nextPrompt);
+		document.getElementById("consultant").addEventListener("change", load);
 		
 	}
 	
@@ -88,12 +96,12 @@ var audioRecord = (function () {
 		if(!recordingStatus) {
 			startRecording();
 			recordingStatus = true;
-			startStopButton.innerHTML = strings.stopButton;
+			startStopButton.innerHTML = strings[language].stopButton;
 			
 		} else {
 			stopRecording();
 			recordingStatus = false;
-			startStopButton.innerHTML = strings.recordButton;
+			startStopButton.innerHTML = strings[language].recordButton;
 		}
 	
 	}
@@ -147,7 +155,7 @@ var audioRecord = (function () {
 			  timeLimit:120,
 			  encodeAfterRecord:encodeAfterRecord,
 			  ogg: {quality: 0.5},
-			  mp3: {bitRate: 160}
+			  mp3: {bitRate: 256}
 			});
 
 			
@@ -156,7 +164,7 @@ var audioRecord = (function () {
 			//start the recording process
 			recorder.startRecording();
 			let status = document.createElement('span');
-			status.innerHTML = strings.recording;
+			status.innerHTML = strings[language].recording;
 			status.classList.add("pulsating");
 			document.getElementById("status").append(status);
 
@@ -165,10 +173,10 @@ var audioRecord = (function () {
 
 		}).catch(function(err) {
 			//enable the record button if getUSerMedia() fails
-			startStopButton.innerHTML = strings.recordButton;
+			startStopButton.innerHTML = strings[language].recordButton;
 		});
 
-		startStopButton.innerHTML = strings.stopButton;
+		startStopButton.innerHTML = strings[language].stopButton;
 	}
 
 	function stopRecording() {
@@ -178,12 +186,12 @@ var audioRecord = (function () {
 		gumStream.getAudioTracks()[0].stop();
 
 		//disable the stop button
-		//startStopButton.innerHTML = strings.recordButton;
+		//startStopButton.innerHTML = strings[language].recordButton;
 		startStopButton.disabled = true;
 		//document.getElementById("status").innerHTML = "";
 		
 		let status = document.createElement('span');
-		status.innerHTML = strings.processing;
+		status.innerHTML = strings[language].processing;
 		status.classList.add("pulsating");
 		document.getElementById("status").innerHTML = "";
 		document.getElementById("status").append(status);
@@ -213,7 +221,7 @@ var audioRecord = (function () {
 		upload.href="#";
 		upload.id = filename;
 		//console.log(filename);
-		upload.innerHTML = strings.sentButton;
+		upload.innerHTML = strings[language].sentButton;
 		upload.addEventListener("click", function(event){
 			  var xhr=new XMLHttpRequest();
 			  xhr.onload=function(e) {
@@ -221,19 +229,19 @@ var audioRecord = (function () {
 					  __log("Server returned: " , e.target.responseText.replace(/\s+/g," "));
 					  
 					  let status = document.createElement('span');
-					  status.innerHTML = strings.uploadSuccessful;
+					  status.innerHTML = strings[language].uploadSuccessful;
 					  document.getElementById("status").innerHTML = "";
 					  document.getElementById("status").append(status);
 					  
 					  document.getElementById("recordingsList").innerHTML = "";
-					  promptManager.phraseDone();
+					  phraseDone();
 				  }
 			  };
 			  xhr.upload.onprogress = function(e) {
 				  document.getElementById(that.upload.id).disabled = true;
 
 				  let status = document.createElement('span');
-				  status.innerHTML = strings.uploading;
+				  status.innerHTML = strings[language].uploading;
 				  status.classList.add("pulsating");
 				  document.getElementById("status").innerHTML = "";
 				  document.getElementById("status").append(status);
@@ -247,7 +255,7 @@ var audioRecord = (function () {
 
 		this.tryagain = document.createElement('button');
 		tryagain.href="#";
-		tryagain.innerHTML = strings.tryagainButton;
+		tryagain.innerHTML = strings[language].tryagainButton;
 		tryagain.addEventListener("click", function(event){
 			document.getElementById("status").innerHTML = "";
 			startStopButton.disabled = false;
@@ -273,61 +281,42 @@ var audioRecord = (function () {
 	}
 
 
+	/// prompter stuff
 
-	return {
-		toggleRecording: toggleRecording,
-		soundFile: soundFile,
-		launch: launch
-	}
-})(); 
-
-//var consultantSelection;
-///////// load sentences for speakers
-window.onload = function() {
-	audioRecord.launch();
-}
-
-
-var promptManager = (function () {
 
 	var prompts = [];
 	var currentPromptIndex = 0;
 	var consultant;
-	
-	var launch = function () {
-		document.getElementById("prompts.back").disabled = true;
-		document.getElementById("prompts.forward").disabled = true;
 
-		document.getElementById("prompts.back").addEventListener("click", prevPrompt);
-		document.getElementById("prompts.forward").addEventListener("click", nextPrompt);
+	var loadLinguist = function() {
+			function handleFileData(fileData) {
+				if (!fileData) {
+					// Show error
+					return;
+				}
+				// Use the file data
+				if (fileData.trim()) {
+					console.log(fileData)
+// 					prompts = fileData.trim().split(/[\r\n]/g);
+// 					/// prompts found, disable speaker choice, enable recording
+// 					consultantSelection.disabled = true;
+// 					startStopButton.disabled = false
+// 					showPhrase();
+// 					updatePromptCounter();
+				}
+			}
 
-		document.getElementById("consultant").addEventListener("change", load);
-
+			// Do the request
+			doGET("linguists/" + linguist + ".txt?rand=" + Math.random(), handleFileData);		
 	}
 
+	
 	var load = function() {
 	    let consultantSelection = document.getElementById("consultant");
 		consultant = consultantSelection.options[consultantSelection.selectedIndex].value;
 		//console.log(consultant);
 		if (consultant != "none") {
 
-			function doGET(path, callback) {
-				var xhr = new XMLHttpRequest();
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState == 4) {
-						// The request is done; did it work?
-						if (xhr.status == 200) {
-							// ***Yes, use `xhr.responseText` here***
-							callback(xhr.responseText);
-						} else {
-							// ***No, tell the callback the call failed***
-							callback(null);
-						}
-					}
-				};
-				xhr.open("GET", path);
-				xhr.send();
-			}
 
 			function handleFileData(fileData) {
 				if (!fileData) {
@@ -414,15 +403,41 @@ var promptManager = (function () {
 		document.getElementById("promptscounter").innerHTML = currentPromptIndex+1 + "/" + prompts.length;
 	}
 
+
+	function doGET(path, callback) {
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState == 4) {
+				// The request is done; did it work?
+				if (xhr.status == 200) {
+					// ***Yes, use `xhr.responseText` here***
+					callback(xhr.responseText);
+				} else {
+					// ***No, tell the callback the call failed***
+					callback(null);
+				}
+			}
+		};
+		xhr.open("GET", path);
+		xhr.send();
+	}
+
+
+
+
+
 	return {
-		launch: launch,
-		load: load,
-		phraseDone: phraseDone
+		toggleRecording: toggleRecording,
+		soundFile: soundFile,
+		launch: launch
 	}
 	
 
 })();
 
+window.onload = function() {
+	audioRecord.launch();
+}
 
 
 

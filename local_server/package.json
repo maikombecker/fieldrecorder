@@ -2,8 +2,8 @@
 	"name": "experigenhosttest",
 	"description": "Simplest hosting simulation",
 	"version": "0.0.1",
-	"scripts": {
-		"start": "node app.js"
+	"scripts": {	
+		   "start": "node app.js"
 	},
 	"dependencies": {
 		"express": "3.x"
